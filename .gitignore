@@ -19,3 +19,7 @@ node_modules/
 # Logs / temp
 *.log
 tmp/
+
+# Skill eval workspaces (test fixtures, run outputs)
+skills/*-workspace/
+*-workspace/
