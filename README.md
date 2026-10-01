@@ -81,3 +81,27 @@ cp -r skills/git-stage-analyze skills/git-wt-analyze skills/git-pr-write ~/.clau
 Newly added skills are picked up on a fresh session, so restart Claude Code if
 they do not appear right away. Re-run the copy after editing a skill here to
 push the update into `~/.claude/skills`.
+
+## Using with other agents
+
+These skills are packaged for Claude Code, but the instructions themselves are
+plain markdown that runs ordinary `git` commands, so they are largely portable.
+
+What is Claude-specific:
+
+- The `SKILL.md` frontmatter format and how it is discovered and loaded.
+- The install paths under `.claude/skills/` and `/skill-name` invocation.
+- Description-based auto-triggering, which relies on Claude's skill loader.
+
+To use a skill with another coding agent:
+
+1. Copy the body of the `SKILL.md` (everything below the frontmatter) into that
+   tool's instruction mechanism, for example an `AGENTS.md`, Cursor rules, or a
+   Copilot instructions file.
+2. Invoke it by describing the task, since slash commands and auto-triggering
+   will not exist there.
+3. Make sure the agent can run `git` in your repo. In a chat-only tool, paste
+   the output of `git diff --staged`, `git status`, or `git log` yourself.
+
+Some other agent tools may support the `SKILL.md` convention directly. Check
+their documentation, as these skills have only been tested in Claude Code.
