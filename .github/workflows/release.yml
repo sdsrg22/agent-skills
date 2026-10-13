@@ -1,0 +1,23 @@
+name: Release skills
+
+# Pushing a tag like v1.0.0 builds every skill and attaches the .skill files to a
+# GitHub release. Chat users download them from the Releases page.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/*.skill --title "$GITHUB_REF_NAME" --generate-notes

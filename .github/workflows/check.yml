@@ -1,0 +1,20 @@
+name: Check skills
+
+# Builds every skill on each push and pull request. The build validates each
+# skill's frontmatter, so a broken skill fails here before anyone installs it.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run build
