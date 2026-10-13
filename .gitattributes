@@ -1,0 +1,5 @@
+# Keep shell scripts on LF so they run after a Windows checkout
+*.sh text eol=lf
+
+# Generated skill packages are zip files
+*.skill binary
