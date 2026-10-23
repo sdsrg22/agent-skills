@@ -1,0 +1,13 @@
+{
+  "name": "claude-skills",
+  "private": true,
+  "type": "module",
+  "description": "Personal, reusable Claude skills",
+  "scripts": {
+    "build": "bun scripts/build-skills.ts",
+    "clean": "bun scripts/build-skills.ts --clean"
+  },
+  "devDependencies": {
+    "fflate": "^0.8.3"
+  }
+}
