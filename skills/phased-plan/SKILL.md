@@ -27,6 +27,14 @@ Choose the rules file: `.claude/phased-plan.rules.md` if the repo has one, other
 
 For every gap, ask once (AskUserQuestion): skip that rule, or use the bundled default. Recommend one in a line. A rule whose files are absent is dropped from the plan unless the user picks the default. Record every answer under Decisions in the plan.
 
+Keep the questions few. Group related gaps into one AskUserQuestion call (up to four questions per call), and do not ask about a gap that clearly does not apply to the task (for example docker files when the task touches no services). If the rules file and CLAUDE.md disagree on something (package manager, commit footer, ADRs), the rules file wins for this skill, but name each conflict in one question so the user can confirm.
+
+Always ask about commit behavior too, even when nothing is missing. Show what the repo and CLAUDE.md already say (who commits, message format, footer), then ask whether the user wants to change any of it:
+- Who commits: the user, or Claude when told. Default: Claude proposes the message and commits only when the user says so.
+- Message format and footer style, if the repo has none or the user wants another.
+- Ticket id: whether commit messages must carry one, where it goes (for example a `Refs: <ticket>` footer, or in the subject), and where to take it from (the branch name, or ask). If a ticket id is required and none is found, ask for it.
+Record the answers under Decisions. Every commit message in the plan and in the phase protocol then follows them, including the ticket id when required.
+
 ## The task
 
 TASK: as given above.
@@ -44,7 +52,7 @@ Phase 0 runs only after the plan is approved. It creates the progress file, whic
 
 Protocol that applies to every phase:
 - Before and after each phase, update the scratchpad progress file (tick the checklist, log decisions and findings, record commit hashes).
-- After each phase: run only the filtered tests, type-check and lint for touched packages; format only dirty files using the formatter from the rules file; give me the commit message and a one-line git add; commit only when I say so; never push, never --no-verify.
+- After each phase: run only the filtered tests, type-check and lint for touched packages; format only dirty files using the formatter from the rules file; give me the commit message (with the ticket id if Step 0 says one is required) and a one-line git add; commit only as agreed in Step 0, by default only when I say so; never push, never --no-verify.
 - Then check the context window usage (and the usage windows if available) and tell me explicitly whether to run the compact-resume skill before the next phase. Suggest it from about half the context, and always before a heavy phase. If context nears three quarters, finish or revert the in-flight edit, update the progress file and ask for compact-resume. If the compact-resume skill is not installed, say so, update the progress file, and give me a short manual summary to paste after /compact.
 - Then stop and wait for me before the next phase.
 
@@ -62,7 +70,7 @@ Then the work phases, fitted to the repo and the rules file (it lists the typica
 
 ## PLAN QUALITY BAR
 
-- Every phase says what changes, which files, which tests prove it, and its commit message.
+- Every phase says what changes, which files, which tests prove it, and its commit message (including the ticket id when required).
 - Performance, security and failure behaviour are stated where they matter.
 - Open questions that can wait are listed under "Open points" instead of blocking the plan.
 - End with ExitPlanMode for my approval, not a text question.
