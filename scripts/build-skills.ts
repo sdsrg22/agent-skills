@@ -20,7 +20,7 @@ const DIST_DIR = process.env.DIST_DIR ?? join(ROOT, "dist");
 // Skills that only make sense in Claude Code (they rely on slash commands, local
 // files, or desktop tools), so they are validated but not packaged for Claude.ai.
 // Naming one explicitly, for example `bun run build compact-resume`, still builds it.
-const CLAUDE_CODE_ONLY = new Set(["compact-resume"]);
+const CLAUDE_CODE_ONLY = new Set(["compact-resume", "phased-plan"]);
 
 // Local-only folders that must never ship inside a package.
 const EXCLUDE_DIRS = new Set(["evals", "node_modules", "__pycache__"]);

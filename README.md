@@ -13,6 +13,7 @@ Claude Code installation.
 | [`git-pr-write`](skills/git-pr-write/SKILL.md) | Writes a PR title and description from a commit range, confirming the target branch and filling the repo's PR template when present. | `/git-pr-write` |
 | [`jira-client-update`](skills/jira-client-update/SKILL.md) | Rewrites a rough engineer-written Jira comment into a client-ready update without inventing facts. Has an internal mode for teammates. | `/jira-client-update` |
 | [`compact-resume`](skills/compact-resume/SKILL.md) | Prepares a safe `/compact`: saves a handoff summary to disk and prints one ready-to-paste resume prompt. **Claude Code only.** | `/compact-resume` |
+| [`phased-plan`](skills/phased-plan/SKILL.md) | Plans work in approved phases: checks which conventions the repo has, explores read-only, asks about design decisions, then sets a per-phase protocol (progress file, filtered checks, commit message, context check, stop). Manual only. **Claude Code only.** | `/phased-plan <task>` |
 
 You can also just describe the task in plain language and Claude can pick the
 right skill.
@@ -74,6 +75,24 @@ It never runs `/compact` itself and never includes secret values. It **writes
 files into your project**, so read [`CONTRACT.md`](skills/compact-resume/CONTRACT.md)
 for exactly which ones. It is Claude Code only, so it is not packaged for
 Claude.ai chat.
+
+### phased-plan
+
+Type `/phased-plan <task>` to plan a larger piece of work. It only runs when you
+call it. It:
+
+1. checks which conventions the repo has (CLAUDE.md, rules, commit config,
+   package manager, migrations, ADRs, CODEOWNERS, ignored `.scratchpad/`) and
+   shows a found or missing table, asking what to do about each gap,
+2. explores read-only and asks about every decision that changes the design,
+3. writes a phased plan and ends with ExitPlanMode for your approval, and
+4. after approval, works phase by phase: progress file, filtered checks, a
+   proposed commit message, a context check, then it stops and waits for you.
+
+Stack specifics (pnpm, ADRs, review gates and so on) live in
+[`references/default-rules.md`](skills/phased-plan/references/default-rules.md).
+A repo can override them with `.claude/phased-plan.rules.md`. It never commits
+or pushes. It is Claude Code only, so it is not packaged for Claude.ai chat.
 
 ## What is a skill?
 
@@ -146,7 +165,7 @@ bun run clean          # deletes dist/
 The build checks each skill's frontmatter first (valid YAML, `name` matches the
 folder, `description` present) and stops with a clear error if it is wrong, so a
 broken skill never gets packaged. Skills listed in `CLAUDE_CODE_ONLY` in
-`scripts/build-skills.ts` (currently `compact-resume`) are validated but not
+`scripts/build-skills.ts` (currently `compact-resume` and `phased-plan`) are validated but not
 packaged, because they cannot run in Claude.ai chat. Local `evals/` and `node_modules/` folders are
 left out. The output is reproducible: building unchanged skills produces an
 identical file.
