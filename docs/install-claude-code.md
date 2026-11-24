@@ -80,6 +80,19 @@ It writes files into your project, usually next to your progress notes, or in a
 check any summary before you commit it. See
 [the contract](../skills/compact-resume/CONTRACT.md) for the full list.
 
+## Use phased-plan
+
+Type `/phased-plan` followed by the task, for example
+`/phased-plan LER-123 add audit log export`. It only runs when you type it.
+First it checks which conventions your repo has and shows what is missing; answer
+its questions about any gaps. It then explores read-only, asks about design
+decisions, and gives you a plan to approve.
+
+After you approve, it creates a progress file at `.scratchpad/<ticket>.progress.md`.
+Make sure `.scratchpad/` is in your `.gitignore` (it will ask before changing
+anything). It stops after every phase and never commits or pushes. To change
+the bundled rules for a repo, add `.claude/phased-plan.rules.md`.
+
 ## Update
 
 Pull the latest version and run the installer again. It replaces the installed
